@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  nodejs:
+    build:
+      context: ./server
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mysql
+    networks:
+      - mynetwork
+
+  react-app:
+    build:
+      context: ./client
+    ports:
+      - "3000:3000"
+    networks:
+      - mynetwork
+
+  mysql:
+    image: mysql
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'admin'
+      MYSQL_DATABASE: 'tiendamia'
+    restart: always
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
